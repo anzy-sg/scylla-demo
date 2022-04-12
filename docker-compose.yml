@@ -1,0 +1,90 @@
+version: '2'
+
+services:
+#  demo:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+
+  mdw1_1:
+    image: scylladb/scylla-nightly
+    container_name: mdw1_1
+    volumes:
+      - ./mdw1/node1/cassandra-rackdc.properties:/etc/scylla/cassandra-rackdc.properties
+      - ./mdw1/node1/scylla.yaml:/etc/scylla/scylla.yaml
+    command: --seeds=mdw1_1,las1_1,iad2_1 --smp 1
+    ports:
+      - "9042:9042"
+      - "9142:9142"
+
+  mdw1_2:
+    image: scylladb/scylla-nightly
+    container_name: mdw1_2
+    command: --seeds=mdw1_1,las1_1,iad2_1 --smp 1
+    volumes:
+      - ./mdw1/node2/cassandra-rackdc.properties:/etc/scylla/cassandra-rackdc.properties
+      - ./mdw1/node2/scylla.yaml:/etc/scylla/scylla.yaml
+
+  mdw1_3:
+    image: scylladb/scylla-nightly
+    container_name: mdw1_3
+    command: --seeds=mdw1_1,las1_1,iad2_1 --smp 1
+    volumes:
+      - ./mdw1/node3/cassandra-rackdc.properties:/etc/scylla/cassandra-rackdc.properties
+      - ./mdw1/node3/scylla.yaml:/etc/scylla/scylla.yaml
+
+  las1_1:
+    image: scylladb/scylla-nightly
+    container_name: las1_1
+    volumes:
+      - ./las1/node1/cassandra-rackdc.properties:/etc/scylla/cassandra-rackdc.properties
+      - ./las1/node1/scylla.yaml:/etc/scylla/scylla.yaml
+    command: --seeds=mdw1_1,las1_1,iad2_1 --smp 1
+    ports:
+      - "19042:9042"
+      - "19142:9142"
+
+  las1_2:
+    image: scylladb/scylla-nightly
+    container_name: las1_2
+    command: --seeds=mdw1_1,las1_1,iad2_1 --smp 1
+    volumes:
+      - ./las1/node2/cassandra-rackdc.properties:/etc/scylla/cassandra-rackdc.properties
+      - ./las1/node2/scylla.yaml:/etc/scylla/scylla.yaml
+
+  las1_3:
+    image: scylladb/scylla-nightly
+    container_name: las1_3
+    command: --seeds=mdw1_1,las1_1,iad2_1 --smp 1
+    volumes:
+      - ./las1/node3/cassandra-rackdc.properties:/etc/scylla/cassandra-rackdc.properties
+      - ./las1/node3/scylla.yaml:/etc/scylla/scylla.yaml
+      
+      
+  iad2_1:
+    image: scylladb/scylla-nightly
+    container_name: iad2_1
+    volumes:
+      - ./iad2/node1/cassandra-rackdc.properties:/etc/scylla/cassandra-rackdc.properties
+      - ./iad2/node1/scylla.yaml:/etc/scylla/scylla.yaml
+    command: --seeds=mdw1_1,las1_1,iad2_1 --smp 1
+    ports:
+      - "29042:9042"
+      - "29142:9142"
+    
+  iad2_2:
+    image: scylladb/scylla-nightly
+    container_name: iad2_2
+    command: --seeds=mdw1_1,las1_1,iad2_1 --smp 1
+    volumes:
+      - ./iad2/node2/cassandra-rackdc.properties:/etc/scylla/cassandra-rackdc.properties
+      - ./iad2/node2/scylla.yaml:/etc/scylla/scylla.yaml
+  
+  iad2_3:
+    image: scylladb/scylla-nightly
+    container_name: iad2_3
+    command: --seeds=mdw1_1,las1_1,iad2_1 --smp 1
+    volumes:
+      - ./iad2/node3/cassandra-rackdc.properties:/etc/scylla/cassandra-rackdc.properties
+      - ./iad2/node3/scylla.yaml:/etc/scylla/scylla.yaml
+      
