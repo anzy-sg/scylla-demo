@@ -1,10 +1,10 @@
 version: '2'
 
 services:
-#  demo:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
+  demo:
+    build:
+      context: .
+      dockerfile: Dockerfile
 
   mdw1_1:
     image: scylladb/scylla-nightly

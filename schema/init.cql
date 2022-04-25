@@ -8,9 +8,10 @@ create table user_tls_policy (
                                  user_id bigint,
                                  require_tls boolean,
                                  require_valid_cert boolean,
-                                 version float,
+                                 version double,
                                  PRIMARY KEY (user_id)
 );
+
 
 
 insert into user_tls_policy (user_id, require_tls, require_valid_cert, version) values (1, true, true, 1.0);
