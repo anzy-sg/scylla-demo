@@ -9,19 +9,15 @@ services:
       - scylla-manager-db
 
   scylla-manager-db:
-    image: scylladb/scylla-nightly
-    volumes:
-      - scylla_manager_db_data:/var/lib/scylla
+    image: scylladb/scylla:4.6.3
     networks:
       public:
-    command: --smp 1 --memory 1G
+    command: --smp 1
 
   scylla:
     build:
       context: .
-    image: scylladb/scylla-with-agent
-    volumes:
-      - scylla_data:/var/lib/scylla
+    image: scylladb/scylla-with-agent:4.6.3
     networks:
       public:
         ipv4_address: 192.168.100.100
@@ -29,8 +25,6 @@ services:
 
   minio:
     image: minio/minio:latest
-    volumes:
-      - minio_data:/data
     networks:
       public:
     ports:
@@ -39,11 +33,6 @@ services:
       MINIO_ACCESS_KEY: minio
       MINIO_SECRET_KEY: minio123
     command: server /data
-
-volumes:
-  minio_data:
-  scylla_data:
-  scylla_manager_db_data:
 
 networks:
   public:

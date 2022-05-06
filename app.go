@@ -9,21 +9,21 @@ import (
 func main() {
 	// Create gocql cluster.
 	cluster := gocql.NewCluster("mdw1_1")
-	cluster.Keyspace = "mailsettings"
+	cluster.Keyspace = "moogle"
 	cluster.Consistency = gocql.LocalQuorum
-	cluster.PoolConfig.HostSelectionPolicy = gocql.TokenAwareHostPolicy(gocql.DCAwareRoundRobinPolicy("las1"))
+	cluster.PoolConfig.HostSelectionPolicy = gocql.DCAwareRoundRobinPolicy("mdw1")
 	session, err := gocql.NewSession(*cluster)
 	if err != nil {
 		panic(err)
 	}
 	defer session.Close()
 
-	insert(session)
+	query(session)
 }
 func insert(session *gocql.Session) {
-	insertStr := `INSERT INTO user_tls_policy (user_id, require_tls, require_valid_cert, version) VALUES (?, ?, ?, ?)`
+	insertStr := `INSERT INTO user (id, name, age, state) VALUES (?, ?, ?, ?)`
 
-	err := session.Query(insertStr, 5, true, true, 1.5).Exec()
+	err := session.Query(insertStr, 12, "Bob", 30, "AZ").Exec()
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -32,19 +32,19 @@ func insert(session *gocql.Session) {
 }
 
 func query(session *gocql.Session) {
-	queryStr := `SELECT user_id, require_tls, require_valid_cert, version 
-              FROM user_tls_policy
-              WHERE user_id = ?`
+	queryStr := `SELECT id, name, age, state
+              FROM user
+              WHERE id = ?`
 
 	q := session.Query(queryStr, 2)
 
-	var userId int
-	var requireTls bool
-	var requireValidCert bool
-	var version float32
+	var id int
+	var name string
+	var age int
+	var state string
 
 	it := q.Iter()
-	for it.Scan(&userId, &requireTls, &requireValidCert, &version) {
-		fmt.Println(userId, requireTls, requireValidCert, version)
+	for it.Scan(&id, &name, &age, &state) {
+		fmt.Println(id, name, age, state)
 	}
 }
